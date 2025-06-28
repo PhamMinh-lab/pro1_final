@@ -4,7 +4,7 @@ from textblob import TextBlob
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from underthesea import pos_tag, sent_tokenize, word_tokenize
+# from underthesea import pos_tag, sent_tokenize, word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.decomposition import LatentDirichletAllocation, PCA
 import regex
