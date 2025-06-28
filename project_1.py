@@ -210,31 +210,31 @@ if option == "Dashboard":
 
     df['sentiment'] = np.where(df['Rating'] >= 4 , 2, np.where(df['Rating'] >= 3, 1, 0))
 
-    vectorizer1 = CountVectorizer(max_df=0.95, min_df=2)
-    doc_term_matrix1 = vectorizer1.fit_transform(df["text"])
+#     vectorizer1 = CountVectorizer(max_df=0.95, min_df=2)
+#     doc_term_matrix1 = vectorizer1.fit_transform(df["text"])
 
-    y = df['sentiment'].reset_index(drop=True)
+#     y = df['sentiment'].reset_index(drop=True)
 
-# Optional: filter out any residual NaNs just in case
-    mask = ~y.isnull()
-    doc_term_matrix1 = doc_term_matrix1[mask]
-    y = y[mask]
+# # Optional: filter out any residual NaNs just in case
+#     mask = ~y.isnull()
+#     doc_term_matrix1 = doc_term_matrix1[mask]
+#     y = y[mask]
     
-# Convert y to array if needed
-    y = np.array(y)
+# # Convert y to array if needed
+#     y = np.array(y)
 
-    oversample = RandomOverSampler(sampling_strategy={0: 2000, 1: 3000}, random_state=42)
-    X_resampled, y_resampled = oversample.fit_resample(doc_term_matrix1, y)
+#     oversample = RandomOverSampler(sampling_strategy={0: 2000, 1: 3000}, random_state=42)
+#     X_resampled, y_resampled = oversample.fit_resample(doc_term_matrix1, y)
 
 
-    X1 = doc_term_matrix1
-    y1= y_resampled
+#     X1 = doc_term_matrix1
+#     y1= y_resampled
 
-    X_train1 , X_test1 , y_train1, y_test1 = train_test_split(X1, y1, random_state=42)
+#     X_train1 , X_test1 , y_train1, y_test1 = train_test_split(X1, y1, random_state=42)
         
-    nvmodel = MultinomialNB()
-    nvmodel.fit(X_train1, y_train1)
-    y_pred_nv = nvmodel.predict(X_test1)
+#     nvmodel = MultinomialNB()
+#     nvmodel.fit(X_train1, y_train1)
+#     y_pred_nv = nvmodel.predict(X_test1)
 
     def analyze_company_topics(company_id=None, n_topics=5):
         # Lấy danh sách id hợp lệ
