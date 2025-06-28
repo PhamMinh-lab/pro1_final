@@ -28,10 +28,10 @@ def safe_vectorizer_fit(texts, min_df=2, max_df=0.95):
 
 # ----------------- Sidebar -----------------
 st.sidebar.title("🔧 Settings")
-option = st.sidebar.selectbox("Choose a category", ["Dashboard", "Project Process", "C"], key="main_selectbox")
+option = st.sidebar.selectbox("Choose a category", ["Dashboard", "Project Process"], key="main_selectbox")
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 👨‍🎓 Group Members")
-st.sidebar.markdown("1. Pham Nhat Minh  \n2. Vo Quoc Hung")
+st.sidebar.markdown("1. Pham Nhat Minh \nEmail: mphamm12@gmail.com  \n2. Vo Quoc Hung \nEmail: hung232803@gmail.com")
 
 # ----------------- Dashboard -----------------
 if option == "Dashboard":
