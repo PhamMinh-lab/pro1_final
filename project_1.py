@@ -453,9 +453,9 @@ if option == "Dashboard":
 # ----------------- Project Process -----------------
 elif option == "Project Process":
     st.title("📈 Project Process Overview")
-    st.write("""
-    1. **Data Collection**: Gather feedback data from ITViec platform.
-    """)
+
+    # --- STEP 1: Data Collection ---
+    st.markdown("### 1. 📥 Data Collection: Gather feedback data from ITViec platform.")
 
     @st.cache_data
     def load_data():
@@ -463,18 +463,66 @@ elif option == "Project Process":
 
     df = load_data()
 
-    if st.checkbox("Show Raw Feedback Data"):
+    if st.checkbox("🔍 Show Raw Feedback Data"):
         st.write(df.head(10))
 
-    st.write("""
-    2. **Data Preprocessing**: Clean and prepare the data for analysis.
-    """)
-    st.write("""
-    3. **Sentiment Analysis**: Use TextBlob to analyze sentiment of feedback.
-    """)
-    st.write("""
-    4. **Visualization**: Create visualizations to summarize findings.
-    """)
-    st.write("""
-    5. **Deployment**: Deploy the application for user interaction.
+    # --- STEP 2: Data Preprocessing ---
+    st.markdown("### 2. 🧹 Data Preprocessing: Clean and prepare the data for analysis.")
+    
+    # Drop rows where all feedback columns are NaN
+    df = df.dropna(how='all', subset=["Title", "What I liked", "Suggestions for improvement"])
+
+    # Combine text columns into one
+    df['text'] = (
+        df['Title'].fillna('') + ' - ' +
+        df['What I liked'].fillna('') + ' - ' +
+        df['Suggestions for improvement'].fillna('')
+    )
+
+    # Drop rows where text or rating is missing
+    df = df.dropna(subset=["text", "Rating"])
+    df = df.reset_index(drop=True)
+
+    # Assign sentiment: 0 = negative, 1 = neutral, 2 = positive
+    df['sentiment_label'] = df['Rating'].apply(lambda x: 0 if x <= 2 else 2 if x >= 4 else 1)
+
+    st.write("✅ Preprocessing completed. Preview of cleaned data:")
+    st.dataframe(df[['Rating', 'text', 'sentiment_label']].head())
+
+    # --- STEP 3: Sentiment Analysis ---
+    st.markdown("### 3. 🧠 Sentiment Analysis: Use TextBlob to analyze sentiment of feedback.")
+
+    def get_textblob_sentiment(text):
+        return TextBlob(text).sentiment.polarity
+
+    df['textblob_polarity'] = df['text'].apply(get_textblob_sentiment)
+    df['textblob_sentiment'] = df['textblob_polarity'].apply(lambda p: 'positive' if p > 0 else 'negative' if p < 0 else 'neutral')
+
+    st.write("✅ Example sentiment predictions using TextBlob:")
+    st.dataframe(df[['text', 'textblob_polarity', 'textblob_sentiment']].head())
+
+    # --- STEP 4: Visualization ---
+    st.markdown("### 4. 📊 Visualization: Create visualizations to summarize findings.")
+
+    st.markdown("#### Sentiment Distribution (Rating-based)")
+    rating_counts = df['sentiment_label'].value_counts().sort_index()
+    rating_labels = ['Negative', 'Neutral', 'Positive']
+    fig1, ax1 = plt.subplots()
+    ax1.bar(rating_labels, rating_counts, color=['red', 'gray', 'green'])
+    ax1.set_title("Sentiment Distribution by Rating")
+    st.pyplot(fig1)
+
+    st.markdown("#### Sentiment Polarity Histogram (TextBlob)")
+    fig2, ax2 = plt.subplots()
+    sns.histplot(df['textblob_polarity'], kde=True, bins=20, ax=ax2, color='skyblue')
+    ax2.set_title("TextBlob Sentiment Polarity Distribution")
+    st.pyplot(fig2)
+
+    # --- STEP 5: Deployment ---
+    st.markdown("### 5. 🚀 Deployment: Deploy the application for user interaction.")
+    st.markdown("You are currently viewing the deployed version of this project using **Streamlit**.")
+    st.markdown("""
+    - Users can explore company reviews.
+    - Sentiment analysis is performed live.
+    - Feedback trends and topics are automatically visualized.
     """)
