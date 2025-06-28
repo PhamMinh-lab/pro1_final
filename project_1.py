@@ -208,17 +208,15 @@ if option == "Dashboard":
     df['sentiment'] = np.where(df['Rating'] >= 4 ,2, np.where(df['Rating'] >= 3,1,0 ))
 
     # Tách feature và label
-    X = df.drop(columns=['sentiment'])
+    # Use only the "text" column for vectorization
+    vectorizer1 = CountVectorizer(max_df=0.95, min_df=2)
+    doc_term_matrix1 = vectorizer1.fit_transform(df["text"])
+
     y = df['sentiment']
 
-    # Khởi tạo oversampler – chỉ oversample lớp 0- 2000, 1 - 3000
+# Now resample the *vectorized data*, which is numeric
     oversample = RandomOverSampler(sampling_strategy={0: 2000, 1: 3000}, random_state=42)
-
-    # Tạo dữ liệu mới sau khi oversample
-    X_resampled, y_resampled =  oversample.fit_resample(X, y)
-
-    vectorizer1 = CountVectorizer(max_df=0.95, min_df=2)
-    doc_term_matrix1 = vectorizer1.fit_transform(X_resampled["text"])
+    X_resampled, y_resampled = oversample.fit_resample(doc_term_matrix1, y)
 
     X1 = doc_term_matrix1
     y1= y_resampled
